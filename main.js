@@ -1,40 +1,44 @@
-const http = require('http');
+const express = require('express');
 const { runAceMetrics } = require('./ace');
 
+const app = express();
 const port = 8080;
 
-const server = http.createServer(function (req, res) {
+app.get((req, res) => {
+    res.send();
+});
+
+app.post('/*', (req, res) => {
     let data = null;
 
-    try {
-        req.on("error", (e) => {
-            console.log(`requested on err`)
-            throw e;
-        }).on("data", (chunk) => {
-            console.log(`requested on data`)
-            data = new TextDecoder().decode(chunk);
-        }).on("end", () => {
+    req.on("error", (e) => {
+        console.log(`requested on err`)
+        throw e;
+    }).on("data", (chunk) => {
+        console.log(`requested on data`)
+        data = new TextDecoder().decode(chunk);
+    }).on("end", () => {
+        try {
             console.log(`requested on end`)
 
             if (!data) {
-                res.writeHead(400);
-                res.end();
-                return;
+                res.status(404).send();
             }
 
             const json = JSON.parse(data);
             const tsv = runAceMetrics(json.content, json.extension);
 
-            res.writeHead(200, { "Content-Type": "text/tab-separated-values" });
-            res.end(tsv);
-        });
-    } catch (e) {
-        console.log(e);
-        res.writeHead(500);
-        res.end();
-    }
+            res.set("Content-Type", "text/tab-separated-values");
+            res.send(tsv);
+        } catch (e) {
+            console.log(e);
+            res.status(500).send();
+        }
+    });
+
 });
 
-server.listen(port);
-console.log(`listening: ${port}`)
+app.listen(port, () => {
+    console.log(`treesitter-api: listening on port ${port}`);
+});
 
