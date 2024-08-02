@@ -35,7 +35,7 @@ jobs:
         with:
           project_id: kccs-dic-ace-stg-220517
           workload_identity_provider: projects/696599575393/locations/global/workloadIdentityPools/github-actions-pool/providers/github-actions-cloud-functions
-          service_account: github-actions-cloud-functions@kccs-dic-ace-stg-220517.iam.gserviceaccount.com
+          service_account: ace-cd-dockerimage-upload@kccs-dic-ace-stg-220517.iam.gserviceaccount.com
       
       - name: Set up Cloud SDK
         uses: google-github-actions/setup-gcloud@v2
