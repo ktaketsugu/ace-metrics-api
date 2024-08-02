@@ -39,6 +39,6 @@ app.post('/*', (req, res) => {
 });
 
 app.listen(port, () => {
-    console.log(`treesitter-api: listening on port ${port}`);
+    console.log(`ace-metrics-api: listening on port ${port}`);
 });
 

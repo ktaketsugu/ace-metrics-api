@@ -2,12 +2,12 @@
 
 ## dcokerイメージ作成
 
-docker build . -t treesitter-api-image
+docker build . -t ace-metrics-api-image
 
 ## dockerイメージをテスト実行
 
-docker rm treesitter-api-test
-docker run -p 8080:8080 --name treesitter-api-test treesitter-api-image
+docker rm ace-metrics-api-test
+docker run -p 8080:8080 --name ace-metrics-api-test ace-metrics-api-image
 
 ## dockerイメージをデプロイ
 
@@ -20,7 +20,7 @@ docker run -p 8080:8080 --name treesitter-api-test treesitter-api-image
 > docker tag *SOURCE-IMAGE* *LOCATION*-docker.pkg.dev/*PROJECT-ID*/*REPOSITORY*/*IMAGE*:*TAG*
 
 ```
-docker tag treesitter-api-image asia-northeast1-docker.pkg.dev/kccs-dic-ace-stg-220517/taketsugu/treesitter-api-image:0.0
+docker tag ace-metrics-api-image asia-northeast1-docker.pkg.dev/kccs-dic-ace-stg-220517/taketsugu/ace-metrics-api-image:0.1
 ```
 
 ### Docker を構成する
@@ -33,7 +33,7 @@ docker tag treesitter-api-image asia-northeast1-docker.pkg.dev/kccs-dic-ace-stg-
 > docker push *LOCATION*-docker.pkg.dev/PROJECT-ID/REPOSITORY/IMAGE:TAG
 
 ```
-docker push asia-northeast1-docker.pkg.dev/kccs-dic-ace-stg-220517/taketsugu/treesitter-api-image:0.0
+docker push asia-northeast1-docker.pkg.dev/kccs-dic-ace-stg-220517/taketsugu/ace-metrics-api-image:0.0
 ```
 
 ### デプロイする
@@ -42,7 +42,12 @@ docker push asia-northeast1-docker.pkg.dev/kccs-dic-ace-stg-220517/taketsugu/tre
 > ( IMAGE_URL=*REGION*-docker.pkg.dev/*PROJECT_ID*/*REPO_NAME*/*PATH*:*TAG* )
 
 ```
-gcloud run deploy treesitter-api --image asia-northeast1-docker.pkg.dev/kccs-dic-ace-stg-220517/taketsugu/treesitter-api-image:0.0
+gcloud run deploy ace-metrics-api --image asia-northeast1-docker.pkg.dev/kccs-dic-ace-stg-220517/taketsugu/ace-metrics-api-image:0.0
 ```
 
+### 前ははまったところ
 
+Windowsだとこれがいる？
+SET CLOUDSDK_PYTHON="C:\Users\220850101\AppData\Local\Programs\Python\Python311\python.exe"
+
+gcloud auth print-access-token | docker login -u oauth2accesstoken --password-stdin asia-northeast1-docker.pkg.dev

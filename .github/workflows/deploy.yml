@@ -1,0 +1,64 @@
+name: Deploy code-diff-api
+
+on:
+  workflow_dispatch:
+    inputs:
+      environment:
+        description: 'Select Environment'
+        type: choice
+        required: true
+        default: 'test'
+        options:
+          - 'test'
+          - 'production'
+
+jobs:
+  deploy:
+    name: deploy
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    permissions:
+      contents: "read"
+      id-token: "write"
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+      
+      - name: Use Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20.x'
+    
+      - name: Authenticate to Google Cloud
+        id: auth
+        uses: google-github-actions/auth@v2
+        with:
+          project_id: kccs-dic-ace-stg-220517
+          workload_identity_provider: projects/696599575393/locations/global/workloadIdentityPools/github-actions-pool/providers/github-actions-cloud-functions
+          service_account: github-actions-cloud-functions@kccs-dic-ace-stg-220517.iam.gserviceaccount.com
+      
+      - name: Set up Cloud SDK
+        uses: google-github-actions/setup-gcloud@v2
+        with:
+          version: '>= 444.0.0'
+
+      - name: Build image
+        run: |
+          docker build . -t ace-metrics-api-image
+          docker tag ace-metrics-api-image asia-northeast1-docker.pkg.dev/kccs-dic-ace-stg-220517/taketsugu/ace-metrics-api-image:0.0
+      
+      - name: Upload image
+        run: |
+          gcloud auth configure-docker asia-northeast1-docker.pkg.dev
+          docker push asia-northeast1-docker.pkg.dev/kccs-dic-ace-stg-220517/taketsugu/ace-metrics-api-image:0.0
+
+      # CPU1未満だと同時実行数が1以外設定できないため、CPU=1にしている
+      - name: Deploy to test-code-diff-api
+        if: ${{ github.event.inputs.environment == 'test' }}
+        run: > 
+          # 何もしない
+        
+      - name: Deploy to production
+        if: ${{ github.event.inputs.environment == 'production' }}
+        run: >
+          gcloud run deploy ace-metrics-api --image asia-northeast1-docker.pkg.dev/kccs-dic-ace-stg-220517/taketsugu/ace-metrics-api-image:0.0

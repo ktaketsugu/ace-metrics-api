@@ -11,8 +11,9 @@
   },
   "author": "Google LLC",
   "dependencies": {
-    "express": "^4.18.2",
+    "express": "^4.19.2",
     "forever": "^4.0.3",
+    "n": "^9.2.3",
     "typescript": "^5.1.6"
   }
 }
