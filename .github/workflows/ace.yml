@@ -1,10 +1,19 @@
 name: ACE
 
-on:
-  push:
-  pull_request:
-    branches:
+on: 			# on以下でワークフローを実行するトリガーとなるイベントを定義します（イベント内容は任意に変更可）
+  push: 		# トリガーにプッシュを指定します
+    paths: 		# pathsを指定することでトリガーの対象を任意のファイルに限定することができます（省略可、任意に変更可）
+      - "**.java"
+      - "**.js"
+      - "**.jsx"
+  pull_request: 	# トリガーにプルリクエストを指定します
+    branches: 		# branchesにはマージ先のブランチを指定します（省略不可、任意に変更可）
+      - master 		# 各リポジトリ環境に合わせて変更してください
       - develop
+    paths: 		# （省略可、任意に変更可）
+      - "**.java"
+      - "**.js"
+      - "**.jsx"
 
 permissions:
   contents: write
@@ -32,4 +41,4 @@ jobs:
 
           # オプション: ACE 実行オプション
           #   例) "-e **Test.java **.spec.js --cyclomatic-complexity 15" は、Java/JavaScriptのテストコードを除外し、サイクロマティック複雑度上限を15に設定します。
-          # ace_option: ""
+          ace_option: "-e utils test/*.cs"
