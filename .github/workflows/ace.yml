@@ -1,0 +1,35 @@
+name: ACE
+
+on:
+  push:
+  pull_request:
+    branches:
+      - develop
+
+permissions:
+  contents: write
+  id-token: write
+  pull-requests: write
+  issues: write
+
+jobs:
+  run-ace:
+    runs-on: ubuntu-22.04
+
+    steps:
+      - name: Checkout ACE
+        uses: actions/checkout@v3
+        with:
+          repository: development-innovation-center/ace-github-extension
+          # 利用バージョン
+          ref: v0
+          token: ${{ secrets.ACE_GITHUB_EXTENSION_TOKEN }}
+
+      - name: Run ACE
+        uses: ./
+        with:
+          ace_token: ${{ secrets.ACE_TOKEN }}
+
+          # オプション: ACE 実行オプション
+          #   例) "-e **Test.java **.spec.js --cyclomatic-complexity 15" は、Java/JavaScriptのテストコードを除外し、サイクロマティック複雑度上限を15に設定します。
+          # ace_option: ""
